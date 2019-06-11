@@ -53,7 +53,7 @@ def init_truck_model():
 
 
 def init_truck_model_detail():
-    models_josn = truck_model.find({}, {
+    models_josn = truck_model.find({"version": 1}, {
         "_id": 0,
         "id": 1,
         "brand_name": 1,
@@ -94,8 +94,8 @@ def init_truck_model_detail():
                             value = value_content.find('div').text
                             cell_truck_models[i][row_id] = value.strip()
         for cell_truck_model in cell_truck_models:
-            cell_truck_model["_id"] = getNextValue('truck_cell_model_detail')
-            cell_truck_model["parent_id"] = model["id"]
+            cell_truck_model["_id"] = getNextValue('truck_model_detail')
+            cell_truck_model["parent_id"] = model["model_index_url"]
             truck_model_detail.insert(cell_truck_model)
         truck_model.find_and_modify({"id": model.get("id", 1)},
                                     {"$inc": {
@@ -213,8 +213,9 @@ if __name__ == "__main__":
     #    print(i)
     #    base_url = "https://product.360che.com/price/c3_s61_b0_s0_c" + str(i) + ".html"
     #    init_engine(base_url)
-    # init_truck_model_detail()
-    init_engine_detail()
+    # id_collect.insert_one(({'_id': "truck_model_detail", 'sequence_value': 0}))
+    init_truck_model_detail()
+    # init_engine_detail()
 
     # models_josn = engine_model.find({"version": 1}, {"_id": 1, "product_index_href": 1, "version":1}).distinct('product_index_href')
     # print(models_josn)
