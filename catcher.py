@@ -17,6 +17,7 @@ truck_model = catcher_db["truck_model"]
 truck_model_detail = catcher_db["truck_model_detail"]
 engine_model = catcher_db["engine_model"]
 engine_model_detail = catcher_db["engine_model_detail_new"]
+air_filter_detail = catcher_db["air_filter_detail"]
 
 truck_parts_db = client['truck_parts_db']
 eurocvbay_parts = truck_parts_db['eurocvbay_parts']
@@ -149,7 +150,7 @@ def init_engine(url):
         engine['_id'] = getNextValue('engine_model')
         engine['version'] = current_version
         engine_model.insert(engine)
-        
+
     # links = html_str.findAll(attrs={"class": "pages-wd"})
     # link = links[0].attrs["href"]
     # init_engine('https://product.360che.com' + link)
@@ -210,11 +211,51 @@ def init_engine_detail():
         print(update_ret.modified_count)
 
 
+def init_air_filter_detail():
+
+    urls = [
+        "https://product.360che.com/m67/16962_param.html",
+        "https://product.360che.com/m66/16560_param.html",
+        "https://product.360che.com/m76/19099_param.html"
+    ]
+    for url in urls:
+        print(url)
+        html = gethtml(url)
+        truck_engin_container = html.find(attrs={"class": "parameter-detail"})
+        cell_engin_model_num = sum(1 for _ in truck_engin_container.find(
+            "tr",
+            attrs={
+                "id": "fixed_top"
+            },
+        ).findAll("th"))
+        cell_engin_models = [{}] * cell_engin_model_num
+        rows = truck_engin_container.findAll("tr")
+        for row_data in rows:
+            if row_data.get('id', "") == "fixed_top":
+                for i in range(1, cell_engin_model_num):
+                    cell_model_name = row_data.findAll("th")[i].find(
+                        'a').string
+                    cell_engin_models[i]["cell_model_name"] = cell_model_name
+            if row_data.get('class', "") == ["param-row"]:
+                row_id = row_data.findAll("td")[0].text
+                for i in range(1, cell_engin_model_num):
+                    value_content_td = row_data.findAll("td")
+                    if value_content_td and len(value_content_td) > i:
+                        value_content = value_content_td[i]
+                        if value_content:
+                            value = value_content.find('div').text
+                            cell_engin_models[i][row_id] = value.strip()
+        for cell_engin_model in cell_engin_models:
+            cell_engin_model["_id"] = getNextValue('air_filter_detail')
+            cell_engin_model["version"] = current_version
+            air_filter_detail.insert(cell_engin_model)
+
+
 def eurocvbay_parts_init(url):
     print("current url is" + url)
     html = gethtml(url)
-    # f = requests.get(url)                 
-    # html = BeautifulSoup(f.content, "html.parser") 
+    # f = requests.get(url)
+    # html = BeautifulSoup(f.content, "html.parser")
     part = {}
     product_name = html.find(attrs={
         "class": "J_productTitle title g_minor"
@@ -230,7 +271,7 @@ def eurocvbay_parts_init(url):
                     continue
                 replace = {}
                 tds = trs[index]
-                if(len(tds) < 4):
+                if (len(tds) < 4):
                     continue
                 replace["brand"] = tds.contents[0].text
                 replace["replace_prod_no"] = tds.contents[1].text
@@ -266,7 +307,7 @@ if __name__ == "__main__":
     #    base_url = "https://product.360che.com/price/c3_s61_b0_s0_c" + str(i) + ".html"
     #    init_engine(base_url)
     # id_collect.insert_one(({'_id': "truck_model_detail", 'sequence_value': 0}))
-    init_truck_model_detail()
+    # init_truck_model_detail()
 
     # init_engine_detail()
 
@@ -282,5 +323,8 @@ if __name__ == "__main__":
 
     # for i in range(10):
     #     gethtml("https://www.baidu.com/")
+    init_air_filter_detail()
 
-    # mongoexport -d test -c students --csv -f classid,name,age -o students_csv.dat 
+    # mongoexport -d truck_catcher_db -c truck_model -o truck_model.dat
+    # mongoexport -d truck_catcher_db -c truck_model_detail -o truck_model_detail.dat
+    # mongoexport -d truck_catcher_db -c truck_model_detail -o truck_model_detail.dat
