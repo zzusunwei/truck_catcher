@@ -6,7 +6,7 @@ import re
 from selenium import webdriver
 from bs4 import BeautifulSoup
 
-current_version = 1
+current_version = 2
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 
@@ -46,10 +46,11 @@ def getNextValue(collect_name):
 
 
 def init_truck_model():
-    base_url = [
-        "http://www.360che.com/zhongkache/", "http://www.360che.com/zixieche/",
-        "http://www.360che.com/qianyinche/", "http://www.360che.com/qingka/"
-    ]
+    # base_url = [
+    #     "http://www.360che.com/zhongkache/", "http://www.360che.com/zixieche/",
+    #     "http://www.360che.com/qianyinche/", "http://www.360che.com/qingka/"
+    # ]
+    base_url = ["http://www.360che.com/qingka/"]
     for url in base_url:
         html = gethtml(url)
         truck_container = html.findAll(attrs={"class": "xll_center2_a1_y"})
@@ -75,7 +76,7 @@ def init_truck_model():
 
 
 def init_truck_model_detail():
-    models_josn = truck_model.find({"version": 1}, {
+    models_josn = truck_model.find({"version": current_version}, {
         "_id": 0,
         "id": 1,
         "brand_name": 1,
@@ -98,8 +99,8 @@ def init_truck_model_detail():
                 "id": "fixed_top"
             },
         ).findAll("th"))
-        cell_truck_models = {} 
-        for i in range(cell_truck_model_num):
+        cell_truck_models = {}
+        for i in range(1, cell_truck_model_num):
             cell_truck_models[i] = {}
         rows = truck_model_container.findAll("tr")
         for row_data in rows:
@@ -117,16 +118,17 @@ def init_truck_model_detail():
                         if value_content:
                             value = value_content.find('div').text
                             cell_truck_models[i][row_id] = value.strip()
-        for cell_truck_model in cell_truck_models:
+        for cell_truck_model in cell_truck_models.values():
             cell_truck_model["_id"] = getNextValue('truck_model_detail')
             cell_truck_model["parent_id"] = model["model_index_url"]
+            cell_truck_model["brand_name"] = model["brand_name"]
+            cell_truck_model["model_name"] = model["model_name"]
             truck_model_detail.insert(cell_truck_model)
-        truck_model.find_and_modify({"id": model.get("id", 1)},
-                                    {"$inc": {
-                                        "version": current_version + 1
-                                    }},
-                                    safe=True,
-                                    new=True)
+        truck_model.find_and_modify(
+            {"id": model.get("id", 1)},
+            {"$inc": {
+                "version": current_version + 1
+            }})
 
 
 def init_engine(url):
@@ -184,16 +186,17 @@ def init_engine_detail():
                 "id": "fixed_top"
             },
         ).findAll("th"))
-        cell_truck_models = {} 
-        for i in range(cell_truck_model_num):
-            cell_truck_models[i] = {}
+        cell_engin_models = {}
+        for i in range(1, cell_engin_model_num):
+            cell_engin_models[i] = {}
         rows = truck_engin_container.findAll("tr")
         for row_data in rows:
             if row_data.get('id', "") == "fixed_top":
                 for i in range(1, cell_engin_model_num):
                     cell_model_name = row_data.findAll("th")[i].find(
                         'a').string
-                    cell_engin_models[i]["cell_model_name"] = cell_model_name
+                    cell_engin_model_num[i][
+                        "cell_model_name"] = cell_model_name
             if row_data.get('class', "") == ["param-row"]:
                 row_id = row_data.findAll("td")[0].text
                 for i in range(1, cell_engin_model_num):
@@ -203,7 +206,7 @@ def init_engine_detail():
                         if value_content:
                             value = value_content.find('div').text
                             cell_engin_models[i][row_id] = value.strip()
-        for cell_engin_model in cell_engin_models:
+        for cell_engin_model in cell_engin_models.values():
             cell_engin_model["_id"] = getNextValue('engine_model_detail')
             cell_engin_model["parent_id"] = model
             cell_engin_model["version"] = current_version
@@ -216,6 +219,7 @@ def init_engine_detail():
 
 
 def init_air_filter_detail():
+
     urls = [
         "https://product.360che.com/m67/16962_param.html",
         "https://product.360che.com/m66/16560_param.html",
@@ -304,15 +308,14 @@ def truck_model_detail_debug(model_param_url):
             "id": "fixed_top"
         },
     ).findAll("th"))
-    cell_truck_models = {} 
+    cell_truck_models = {}
     for i in range(cell_truck_model_num):
         cell_truck_models[i] = {}
     rows = truck_model_container.findAll("tr")
     for row_data in rows:
         if row_data.get('id', "") == "fixed_top":
             for i in range(1, cell_truck_model_num):
-                cell_model_name = row_data.findAll("th")[i].find(
-                    'a').string
+                cell_model_name = row_data.findAll("th")[i].find('a').string
                 cell_truck_models[i]["cell_model_name"] = cell_model_name
         if row_data.get('class', "") == ["param-row"]:
             row_id = row_data.findAll("td")[0].text
@@ -343,7 +346,7 @@ if __name__ == "__main__":
     #    base_url = "https://product.360che.com/price/c3_s61_b0_s0_c" + str(i) + ".html"
     #    init_engine(base_url)
     # id_collect.insert_one(({'_id': "truck_model_detail", 'sequence_value': 0}))
-    # init_truck_model_detail()
+    init_truck_model_detail()
 
     # init_engine_detail()
 
@@ -363,6 +366,7 @@ if __name__ == "__main__":
 
     # mongoexport -d truck_catcher_db -c truck_model -o truck_model.dat
     # mongoexport -d truck_catcher_db -c truck_model_detail -o truck_model_detail.dat
-    # mongoimport -d truck_catcher_db -c truck_model_detail_new truck_model_detail.dat   
-    # mongoimport -d truck_catcher_db -c filter_detail air_filter_detail.dat 
-    truck_model_detail_debug("https://product.360che.com/s0/219_63_param.html")
+    # mongoexport -d truck_catcher_db -c air_filter_detail -o air_filter_detail.dat
+    # mongoimport -d truck_catcher_db -c truck_model_detail_new truck_model_detail.dat
+    # mongoimport -d truck_catcher_db -c filter_detail air_filter_detail.dat
+    # truck_model_detail_debug("https://product.360che.com/s0/219_63_param.html")
