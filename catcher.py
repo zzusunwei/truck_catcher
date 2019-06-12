@@ -98,7 +98,9 @@ def init_truck_model_detail():
                 "id": "fixed_top"
             },
         ).findAll("th"))
-        cell_truck_models = [{}] * cell_truck_model_num
+        cell_truck_models = {} 
+        for i in range(cell_truck_model_num):
+            cell_truck_models[i] = {}
         rows = truck_model_container.findAll("tr")
         for row_data in rows:
             if row_data.get('id', "") == "fixed_top":
@@ -182,7 +184,9 @@ def init_engine_detail():
                 "id": "fixed_top"
             },
         ).findAll("th"))
-        cell_engin_models = [{}] * cell_engin_model_num
+        cell_truck_models = {} 
+        for i in range(cell_truck_model_num):
+            cell_truck_models[i] = {}
         rows = truck_engin_container.findAll("tr")
         for row_data in rows:
             if row_data.get('id', "") == "fixed_top":
@@ -212,7 +216,6 @@ def init_engine_detail():
 
 
 def init_air_filter_detail():
-
     urls = [
         "https://product.360che.com/m67/16962_param.html",
         "https://product.360che.com/m66/16560_param.html",
@@ -292,6 +295,39 @@ def eurocvbay_parts_init(url):
             eurocvbay_parts_init("http://www.eurocvbay.com/" + url)
 
 
+def truck_model_detail_debug(model_param_url):
+    html = gethtml(model_param_url)
+    truck_model_container = html.find(attrs={"class": "parameter-detail"})
+    cell_truck_model_num = sum(1 for _ in truck_model_container.find(
+        "tr",
+        attrs={
+            "id": "fixed_top"
+        },
+    ).findAll("th"))
+    cell_truck_models = {} 
+    for i in range(cell_truck_model_num):
+        cell_truck_models[i] = {}
+    rows = truck_model_container.findAll("tr")
+    for row_data in rows:
+        if row_data.get('id', "") == "fixed_top":
+            for i in range(1, cell_truck_model_num):
+                cell_model_name = row_data.findAll("th")[i].find(
+                    'a').string
+                cell_truck_models[i]["cell_model_name"] = cell_model_name
+        if row_data.get('class', "") == ["param-row"]:
+            row_id = row_data.findAll("td")[0].text
+            for i in range(1, cell_truck_model_num):
+                value_content_td = row_data.findAll("td")
+                if value_content_td and len(value_content_td) > i:
+                    value_content = value_content_td[i]
+                    if value_content:
+                        value = value_content.find('div').text
+                        cell_truck_models[i][row_id] = value.strip()
+    for cell_truck_model in cell_truck_models.values():
+        cell_truck_model["_id"] = getNextValue('truck_model_detail')
+        # truck_model_detail.insert(cell_truck_model)
+
+
 if __name__ == "__main__":
     # init_truck_model()
     # id_collect.insert_one(({'_id': "truck_model", 'sequence_value': 0}))
@@ -323,8 +359,10 @@ if __name__ == "__main__":
 
     # for i in range(10):
     #     gethtml("https://www.baidu.com/")
-    init_air_filter_detail()
+    # init_air_filter_detail()
 
     # mongoexport -d truck_catcher_db -c truck_model -o truck_model.dat
     # mongoexport -d truck_catcher_db -c truck_model_detail -o truck_model_detail.dat
-    # mongoexport -d truck_catcher_db -c truck_model_detail -o truck_model_detail.dat
+    # mongoimport -d truck_catcher_db -c truck_model_detail_new truck_model_detail.dat   
+    # mongoimport -d truck_catcher_db -c filter_detail air_filter_detail.dat 
+    truck_model_detail_debug("https://product.360che.com/s0/219_63_param.html")
