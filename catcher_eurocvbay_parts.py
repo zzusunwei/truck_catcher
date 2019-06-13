@@ -15,7 +15,6 @@ engine_model = catcher_db["engine_model"]
 engine_model_detail = catcher_db["engine_model_detail_new"]
 
 
-
 def init_engine(url):
     driver = webdriver.Chrome()
     driver.get(url)
