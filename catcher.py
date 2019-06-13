@@ -369,6 +369,13 @@ if __name__ == "__main__":
     # mongoexport -d truck_catcher_db -c truck_model -o truck_model.dat
     # mongoexport -d truck_catcher_db -c truck_model_detail -o truck_model_detail.dat
     # mongoexport -d truck_catcher_db -c air_filter_detail -o air_filter_detail.dat
+    # mongoexport -d truck_catcher_db -c engine_model_detail_new -o engine_model_detail_new.dat
+    # mongoexport -d truck_catcher_db -c engine_model -o engine_model.dat
+
+
     # mongoimport -d truck_catcher_db -c truck_model_detail_new truck_model_detail.dat
     # mongoimport -d truck_catcher_db -c filter_detail air_filter_detail.dat
     # truck_model_detail_debug("https://product.360che.com/s0/219_63_param.html")
+
+    # mongoimport -d truck_catcher_db -c engine_model engine_model.dat
+    # mongoimport -d truck_catcher_db -c engine_model_detail_new engine_model_detail_new.dat
