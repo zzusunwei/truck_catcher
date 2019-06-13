@@ -124,15 +124,16 @@ def init_truck_model_detail():
             cell_truck_model["brand_name"] = model["brand_name"]
             cell_truck_model["model_name"] = model["model_name"]
             truck_model_detail.insert(cell_truck_model)
-        truck_model.find_and_modify(
-            {"id": model.get("id", 1)},
-            {"$inc": {
-                "version": current_version + 1
-            }})
+        truck_model.find_and_modify({"id": model.get("id", 1)},
+                                    {"$inc": {
+                                        "version": current_version + 1
+                                    }})
 
 
 def init_engine(url):
-    driver = webdriver.Chrome()
+    option = webdriver.ChromeOptions()
+    option.add_argument('headless')
+    driver = webdriver.Chrome(chrome_options=option)
     driver.get(url)
     html_str = BeautifulSoup(driver.page_source, 'html.parser')
     product_list_ul = html_str.findAll(attrs={"class": "products-list"})[0]
@@ -162,7 +163,7 @@ def init_engine(url):
 
 def init_engine_detail():
     models_josn = engine_model.find({
-        "version": 1
+        "version": 2
     }, {
         "_id": 1,
         "product_index_href": 1,
@@ -195,7 +196,7 @@ def init_engine_detail():
                 for i in range(1, cell_engin_model_num):
                     cell_model_name = row_data.findAll("th")[i].find(
                         'a').string
-                    cell_engin_model_num[i][
+                    cell_engin_models[i][
                         "cell_model_name"] = cell_model_name
             if row_data.get('class', "") == ["param-row"]:
                 row_id = row_data.findAll("td")[0].text
@@ -339,16 +340,17 @@ if __name__ == "__main__":
     #    'sequence_value': 0
     # }))
     # id_collect.insert_one(({'_id': "engine_model", 'sequence_value': 0}))
-    # i = 1
-    # while i < 999999999:
-    #    i += 1
-    #    print(i)
-    #    base_url = "https://product.360che.com/price/c3_s61_b0_s0_c" + str(i) + ".html"
-    #    init_engine(base_url)
+    # i = 265
+    # while i < 399:
+    #     i += 1
+    #     print(i)
+    #     base_url = "https://product.360che.com/price/c3_s61_b0_s0_c" + str(
+    #         i) + ".html"
+    #     init_engine(base_url)
     # id_collect.insert_one(({'_id': "truck_model_detail", 'sequence_value': 0}))
-    init_truck_model_detail()
+    # init_truck_model_detail()
 
-    # init_engine_detail()
+    init_engine_detail()
 
     # models_josn = engine_model.find({"version": 1}, {"_id": 1, "product_index_href": 1, "version":1}).distinct('product_index_href')
     # print(models_josn)
