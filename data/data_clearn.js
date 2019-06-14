@@ -1,0 +1,6 @@
+db.getCollection('engine_model_detail').update({"发动机厂商：" : "", "cell_model_name" : /潍柴/},{$set : {"发动机厂商：" : "潍柴"}},{multi: true})
+db.getCollection('engine_model_detail').update({"发动机厂商：" : "", "cell_model_name" : /云内动力/},{$set : {"发动机厂商：" : "云内动力"}},{multi: true})
+db.getCollection('engine_model_detail').update({"发动机厂商：" : "", "cell_model_name" : /康明斯/},{$set : {"发动机厂商：" : "康明斯"}},{multi: true})
+db.getCollection('engine_model_detail').update({"发动机厂商：" : "", "cell_model_name" : /奔驰/},{$set : {"发动机厂商：" : "奔驰"}},{multi: true})
+db.getCollection('engine_model_detail').update({"发动机厂商：" : "", "cell_model_name" : /日野/},{$set : {"发动机厂商：" : "日野"}},{multi: true})
+db.getCollection('engine_model_detail').update({"发动机厂商：" : "", "cell_model_name" : /复强动力/},{$set : {"发动机厂商：" : "中国重汽集团济南复强动力有限公司"}},{multi: true})
