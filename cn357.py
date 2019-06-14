@@ -102,3 +102,5 @@ if __name__ == "__main__":
         if i < 175:
             get_format_product("https://www.cn357.com/product_list4-" + str(i),
                                "truck_model")
+    # https://www.cn357.com/qipei_list134
+    # https://www.cn357.com/qipei_list133
