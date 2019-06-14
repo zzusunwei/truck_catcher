@@ -339,7 +339,7 @@ def init_filter(url):
         engine['product_index_name'] = product_index_name
         engine['_id'] = getNextValue('engine_model')
         engine['version'] = current_version
-        filter_model.insert(engine)
+        filter_model.insert_one(engine)
 
 
 def init_filter_detail():
@@ -388,14 +388,14 @@ def init_filter_detail():
                             value = value_content.find('div').text
                             cell_engin_models[i][row_id] = value.strip()
         for cell_engin_model in cell_engin_models.values():
-            cell_engin_model["_id"] = getNextValue('engine_model_detail')
+            cell_engin_model["_id"] = getNextValue('filter_model_detail')
             cell_engin_model["parent_id"] = model
             cell_engin_model["version"] = current_version
-            engine_model_detail.insert(cell_engin_model)
+            filter_model_detail.insert(cell_engin_model)
 
         query = {"product_index_href": model}
         newvalues = {"$set": {"version": current_version + 1}}
-        update_ret = engine_model.update_many(query, newvalues)
+        update_ret = filter_model.update_many(query, newvalues)
         print(update_ret.modified_count)
 
 
@@ -434,10 +434,22 @@ if __name__ == "__main__":
     #     gethtml("https://www.baidu.com/")
     # init_air_filter_detail()
 
-    urls = [
-        "https://product.360che.com/price/c3_s113_b0_s0.html",
-        "https://product.360che.com/price/c3_s114_b0_s0.html",
-        "https://product.360che.com/price/c3_s115_b0_s0.html"
-    ]
-    for url in urls:
-        init_filter(url)
+    # urls = [
+    #     "https://product.360che.com/price/c3_s113_b0_s0.html",
+    #     "https://product.360che.com/price/c3_s113_b0_s0_c2.html",
+    #     "https://product.360che.com/price/c3_s113_b0_s0_c3.html",
+    #     "https://product.360che.com/price/c3_s113_b0_s0_c4.html",
+    #     "https://product.360che.com/price/c3_s113_b0_s0_c5.html",
+    #     "https://product.360che.com/price/c3_s113_b0_s0_c6.html",
+    #     "https://product.360che.com/price/c3_s113_b0_s0_c7.html",
+    #     "https://product.360che.com/price/c3_s114_b0_s0.html",
+    #     "https://product.360che.com/price/c3_s114_b0_s0_c2.html",
+    #     "https://product.360che.com/price/c3_s114_b0_s0_c3.html",
+    #     "https://product.360che.com/price/c3_s115_b0_s0.html",
+    #     "https://product.360che.com/price/c3_s115_b0_s0_c2.html",
+    #     "https://product.360che.com/price/c3_s115_b0_s0_c3.html"
+    # ]
+    # for url in urls:
+    #     init_filter(url)
+
+    init_filter_detail()
