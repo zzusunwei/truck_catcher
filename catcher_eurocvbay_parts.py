@@ -35,7 +35,7 @@ def init_engine(url):
             )] = item_type.next_sibling.strip()
         engine['product_index_href'] = product_index_href
         engine['product_index_name'] = product_index_name
-        engine['_id'] = getNextValue('engine_model')
+        engine['_id'] = get_next_id('engine_model')
         engine['version'] = current_version
         engine_model.insert(engine)
     # links = html_str.findAll(attrs={"class": "pages-wd"})

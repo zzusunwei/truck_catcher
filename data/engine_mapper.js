@@ -135,3 +135,7 @@ db.getCollection('engine_model_detail').update({"发动机厂商：": "东风轻
 db.getCollection('engine_model_detail').update({"nick_name": "江铃汽车股份有限公司"}, {$set : {"nick_name": "江铃"}},{upsert: true, multi: true})
 db.getCollection('engine_model_detail').update({"nick_name": "安徽江淮汽车股份有限公司"}, {$set : {"nick_name": "江淮"}},{upsert: true, multi: true})
 db.getCollection('engine_model_detail').update({"nick_name": "华北柴油"}, {$set : {"nick_name": "江华北柴油机铃"}},{upsert: true, multi: true})
+
+db.getCollection('engine_model_detail').update({"发动机：": "", "cell_model_name" : "奔驰 Actros重卡 600马力 8X8 大件牵引车(型号4160)"}, {$set : {"发动机：" : "奔驰OM502LA.IV/3", "变速箱：" : "奔驰G240-16"}},{upsert: true, multi: true})
+db.getCollection('engine_model_detail').update({"发动机：": "", "cell_model_name" : "奔驰 Actros重卡 480马力 6X2 7.3米厢式载货车(型号2548L)"}, {$set : {"发动机：" : "奔驰OM501LA 456", "变速箱：" : "奔驰 第二代 Powershift 12档"}},{upsert: true, multi: true})
+db.getCollection('engine_model_detail').update({"发动机：": "", "cell_model_name" : "奔驰 Actros重卡 480马力 6X4牵引车(型号2648L)"}, {$set : {"发动机：" : "奔驰OM501LA 456", "变速箱：" : "奔驰 第二代 Powershift 12档"}},{upsert: true, multi: true})
