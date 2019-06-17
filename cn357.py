@@ -41,7 +41,7 @@ def get_format_product(url, product_model):
             return products
     except BaseException as e:
         print('错误：', e)
-        error_collection.insert_one({"url": url, "collection": product_model})
+        except_handler(url, product_model)
         return []
 
 
@@ -82,10 +82,7 @@ def get_format_product_detail(parent_collection, detail_collection, version):
             print(update_ret.modified_count)
         except BaseException as e:
             print('错误：', e)
-            error_collection.insert_one({
-                "url": url,
-                "collection": detail_collection
-            })
+            except_handler(url, detail_collection)
 
 
 def get_filter_parts(url, collection_name):
@@ -94,61 +91,77 @@ def get_filter_parts(url, collection_name):
         html = get_html(url)
         if not html:
             return
-        filters_continer = html.findAll(name="div",
-                                        attrs={"class": "cellPic"})
+        filters_continer = html.findAll(name="div", attrs={"class": "cellPic"})
         for filter_continer in filters_continer:
-            url = "https://www.cn357.com" + filter_continer.find(
+            detail_url = "https://www.cn357.com" + filter_continer.find(
                 "a").attrs["href"]
-            filter_html = get_html(url)
-            
-            filter_desc = filter_html.find(attrs={"class": "shopBaoJia"})
-            if not filter_desc:
-                filter_desc = filter_html.find(attrs={"class": "fr"})
-            filter = {}
-            if not filter_desc:
-                error_collection.insert_one({
-                    "url": url,
-                    "collection": collection_name
-                })
-                return
-            filter_desc_items = filter_desc.find("ul").findAll("li")
-            if not filter_desc_items:
-                return
-            for filter_desc_item in filter_desc_items:
-                key = filter_desc_item.find("span").text
-                value = filter_desc_item.text
-                filter[key] = value
+            filter = get_filter_parts_details(detail_url, collection_name)
             truck_parts_cn357_db[collection_name].insert_one(filter)
     except BaseException as e:
         print('错误：', e)
-        error_collection.insert_one({
-            "url": url,
-            "collection": collection_name
-        })
+        except_handler(url, collection_name)
 
 
-def get_filter_parts_details(url, collection_name):  
-    filter_html = get_html(url)        
+def get_filter_parts_details(url, collection_name):
+    filter_html = get_html(url)
     filter_desc = filter_html.find(attrs={"class": "shopBaoJia"})
     if not filter_desc:
-        filter_desc = filter_html.find(attrs={"class": "fr"})
+        container = filter_html.find(attrs={"class": "shopDiv1 pt10 pb10 cf"})
+        if not container:
+            return
+        filter_desc = container.find(attrs={"class": "fr"})
     filter = {}
     if not filter_desc:
-        error_collection.insert_one({
-            "url": url,
-            "collection": collection_name
-        })
+        except_handler(url, collection_name)
         return
     filter_desc_items = filter_desc.find("ul").findAll("li")
     if not filter_desc_items:
         return
     for filter_desc_item in filter_desc_items:
-        key = filter_desc_item.find("span").text
+        key_container = filter_desc_item.find("span")
+        if not key_container:
+            key_container = filter_desc_item.find("i")
+        key = key_container.text
         value = filter_desc_item.text
         filter[key] = value
     return filter
-    truck_parts_cn357_db[collection_name].insert_one(filter)
 
+
+def except_handler(url, target_coll):
+    error_collection.insert_one({
+        "url": url,
+        "collection": target_coll,
+        "version": 0
+    })
+
+
+def error_handler():
+    models = error_collection.find({"version": {
+        "$lt": 2
+    }}, {
+        "_id": 1,
+        "url": 1,
+        "collection": 1,
+        "version": 1
+    })
+
+    for model in models:
+        url = model.get("url")
+
+        coll = model.get("collection")
+        if coll == "truck_model":
+            pass
+        elif coll == "cn357_truck_model_detail":
+            pass
+        elif coll == "cn357_filter_model_detail":
+            ret = get_filter_parts_details(url, coll)
+            if not ret:
+                continue
+            truck_parts_cn357_db[coll].insert_one(ret)
+            query = {"url": model.get("url")}
+            newvalues = {"$set": {"version": 2}}
+            update_ret = error_collection.update_many(query, newvalues)
+            print(update_ret)
 
 
 if __name__ == "__main__":
@@ -181,16 +194,17 @@ if __name__ == "__main__":
 
     # https://www.cn357.com/qipei_list134
     # https://www.cn357.com/qipei_list133
-    filters = [
-        "https://www.cn357.com/qipei_list133",
-        "https://www.cn357.com/qipei_list134"
-    ]
-    for i in range(11, 19):
-        if i < 18:
-            get_filter_parts(
-                "https://www.cn357.com/qipei_list133_0_0_0_0_" + str(i),
-                "cn357_filter_model_detail")
-        if i < 11:
-            get_filter_parts(
-                "https://www.cn357.com/qipei_list134_0_0_0_0_" + str(i),
-                "cn357_filter_model_detail")
+    # filters = [
+    #     "https://www.cn357.com/qipei_list133",
+    #     "https://www.cn357.com/qipei_list134"
+    # ]
+    # for i in range(11, 19):
+    #     if i < 18:
+    #         get_filter_parts(
+    #             "https://www.cn357.com/qipei_list133_0_0_0_0_" + str(i),
+    #             "cn357_filter_model_detail")
+    #     if i < 11:
+    #         get_filter_parts(
+    #             "https://www.cn357.com/qipei_list134_0_0_0_0_" + str(i),
+    #             "cn357_filter_model_detail")
+    error_handler()
