@@ -15,6 +15,7 @@ def get_html(url):
     option = webdriver.ChromeOptions()
     option.add_argument('headless')
     driver = webdriver.Chrome(chrome_options=option)
+    driver.implicitly_wait(60)
     driver.get(url)
     html_str = driver.page_source
     return BeautifulSoup(html_str, 'html.parser')

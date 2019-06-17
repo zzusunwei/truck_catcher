@@ -20,7 +20,7 @@ engine_model = truck_parts_db["engine_model"]
 engine_model_detail = truck_parts_db["engine_model_detail"]
 
 
-def get_format_product(url,product_model):
+def get_format_product(url, product_model):
     html_str = get_html(url)
     products = []
     product_list_ul = html_str.findAll(attrs={"class": "products-list"})[0]
