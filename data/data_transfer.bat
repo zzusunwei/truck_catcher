@@ -5,6 +5,23 @@ REM mongoexport -d truck_catcher_db -c engine_model -o engine_model.dat
 REM mongoexport -d truck_catcher_db -c engine_model_detail_new -o engine_model_detail_new.dat
 
 
+truck_parts_cn357_db = client['truck_parts_cn357_db']
+filter_model = truck_parts_cn357_db["cn357_filter_model"]
+filter_model_detail = truck_parts_cn357_db["cn357_filter_model_detail"]
+truck_model = truck_parts_cn357_db["cn357_truck_model"]
+truck_model_detail = truck_parts_cn357_db["cn357_truck_model_detail"]
+engine_model = truck_parts_cn357_db["cn357_engine_model"]
+engine_model_detail = truck_parts_cn357_db["cn357_engine_model_detail"]
+error_collection = truck_parts_cn357_db["error_coll"]
+
+REM mongoexport -d truck_parts_cn357_db -c cn357_filter_model_detail -o cn357_filter_model_detail.dat
+REM mongoexport -d truck_parts_cn357_db -c cn357_truck_model -o cn357_truck_model.dat
+REM mongoexport -d truck_parts_cn357_db -c cn357_truck_model_detail -o cn357_truck_model_detail.dat
+REM mongoexport -d truck_parts_cn357_db -c cn357_engine_model -o cn357_engine_model.dat
+REM mongoexport -d cn357_engine_model_detail -c cn357_engine_model -o cn357_engine_model_detail.dat
+REM mongoexport -d cn357_engine_model_detail -c error_coll -o error_coll.dat
+
+
 
 REM mongoimport -d truck_parts_db -c truck_model truck_model.dat
 REM mongoimport -d truck_parts_db -c truck_model_detail_new truck_model_detail.dat
