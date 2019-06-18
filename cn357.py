@@ -127,12 +127,7 @@ def get_filter_parts_details(url, collection_name):
     return filter
 
 
-def except_handler(url, target_coll):
-    error_collection.insert_one({
-        "url": url,
-        "collection": target_coll,
-        "version": 0
-    })
+
 
 
 def error_handler():

@@ -3,6 +3,7 @@
 
 import pymongo
 import requests
+import json
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 truck_parts_chinacvsp = client['truck_parts_chinacvsp']
@@ -46,12 +47,13 @@ def get_filter_parts():
                 "shopId": "",
                 "propertyId": ""
             }
-            url = "http://www.chinacvsp.com/ec/goods/goods_list.html?catType=pj&catId=10"
+            url = "http://www.chinacvsp.com/ec/goods/doSearchGoodsByProps.do"
             d = requests.post(url, data=payload, headers=headers)
-            print(d.data)
-            if d and d.rows:
-                print(d.rows)
-                chinacvsp_filter_model.insert.many(d.rows)
+            if d and d.text and d.text:
+                ret = json.loads(d.text)
+                row_data = ret.get("data", "").get("rows", "")
+                print(row_data)
+                chinacvsp_filter_model.insert.many(row_data)
             else:
                 except_handler(i, "chinacvsp_filter_model")
                 print(i)
