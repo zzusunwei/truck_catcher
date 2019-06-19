@@ -93,28 +93,17 @@ def get_filter_parts_details():
                 "Origin":
                 "http://www.chinacvsp.com",
                 "Referer":
-                "http://www.chinacvsp.com/ec/goods/goods_view.html?id=" +
-                str(id),
+                "http://www.chinacvsp.com/ec/goods/doFindGoods.do",
                 "User-Agent":
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36 OPR/60.0.3255.151",
                 "X-Requested-With":
                 "XMLHttpRequest"
             }
             payload = {
-                "isBacklog": "",
-                "kw": "",
-                "sort": "",
-                "cat": 10,
-                "shopCat": "",
-                "catType": "pj",
-                "brand": "",
-                "page": id,
-                "pageSize": 20,
-                "shopId": "",
-                "propertyId": ""
+               "goodsId": str(id)
             }
-            url = "http://www.chinacvsp.com/ec/goods/goods_view.html?id=" + str(
-                id)
+
+            url = "http://www.chinacvsp.com/ec/goods/doFindGoods.do"
             d = requests.post(url, data=payload, headers=headers)
             if d and d.text:
                 ret = json.loads(d.text)

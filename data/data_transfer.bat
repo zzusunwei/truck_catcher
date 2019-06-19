@@ -11,6 +11,13 @@ REM mongoexport -d truck_parts_cn357_db -c cn357_engine_model -o cn357_engine_mo
 REM mongoexport -d truck_parts_cn357_db -c cn357_engine_model -o cn357_engine_model_detail.dat
 REM mongoexport -d truck_parts_cn357_db -c error_coll -o error_coll.dat
 
+REM mongoexport -d truck_parts_chinacvsp -c chinacvsp_filter_detail_model -o chinacvsp_filter_detail_model.dat
+REM mongoexport -d truck_parts_chinacvsp -c chinacvsp_filter_model -o chinacvsp_filter_model.dat
+
+
+REM mongoexport -d truck_parts_chinacvsp -c chinacvsp_filter_detail_model -o chinacvsp_filter_detail_model.dat
+REM mongoexport -d truck_parts_chinacvsp -c chinacvsp_filter_model -o chinacvsp_filter_model.dat
+
 REM mongoimport -d truck_parts_cn357_db -c cn357_filter_model_detail cn357_filter_model_detail.dat
 REM mongoimport -d truck_parts_cn357_db -c cn357_truck_model cn357_truck_model.dat
 REM mongoimport -d truck_parts_cn357_db -c cn357_truck_model_detail cn357_truck_model_detail.dat
