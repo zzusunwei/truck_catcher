@@ -14,7 +14,8 @@ error_collection = catcher_db['error_collection']
 def get_html(url):
     print(url)
     option = webdriver.ChromeOptions()
-    option.add_argument('headless')
+    # option.add_argument('headless')
+    option.add_argument('process-per-site')
     driver = webdriver.Chrome(chrome_options=option)
     driver.implicitly_wait(60)
     driver.get(url)
