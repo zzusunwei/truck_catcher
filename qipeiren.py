@@ -4,6 +4,8 @@ from utils import get_html
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 truck_parts_qipeiren_db = client['truck_parts_qipeiren_db']
 
+product_coll = truck_parts_qipeiren_db["product_coll"]
+
 
 def get_filter_detail(url):
     html = get_html(url)
@@ -42,7 +44,7 @@ def get_filter_detail(url):
                     continue
                 adp_prods.append(li.text.strip())
             product[adp_type] = adp_prods
-        truck_parts_qipeiren_db.insert(product)
+        product_coll.insert(product)
 
 
 if __name__ == "__main__":
