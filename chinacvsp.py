@@ -53,7 +53,7 @@ def get_filter_parts():
                 ret = json.loads(d.text)
                 row_data = ret.get("data", "").get("rows", "")
                 print(row_data)
-                chinacvsp_filter_model.insert.many(row_data)
+                chinacvsp_filter_model.insert_many(row_data)
             else:
                 except_handler(i, "chinacvsp_filter_model")
                 print(i)
