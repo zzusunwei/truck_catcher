@@ -63,10 +63,16 @@ def get_filter_parts():
         except_handler(url, "chinacvsp_filter_model")
 
 
-def get_filter_parts():
+def get_filter_parts_details():
     try:
-        for id in range(1, 25):
+        models = chinacvsp_filter_model.find({}, {
+            "id": 1,
+            "partNo": 1,
+            "dealerPartNo": 1,
+        })
 
+        for model in models:
+            id = model.get("id", "")
             headers = {
                 "Accept":
                 "application/json, text/javascript, */*; q=0.01",
@@ -101,14 +107,14 @@ def get_filter_parts():
                 "shopCat": "",
                 "catType": "pj",
                 "brand": "",
-                "page": i,
+                "page": id,
                 "pageSize": 20,
                 "shopId": "",
                 "propertyId": ""
             }
             url = "http://www.chinacvsp.com/ec/goods/goods_view.html?id=" + id
             d = requests.post(url, data=payload, headers=headers)
-            if d and d.text and d.text:
+            if d and d.text:
                 ret = json.loads(d.text)
                 chinacvsp_filter_detail_model.insert_one(
                     ret.get("data", "").get("goods", ""))
@@ -127,4 +133,4 @@ def except_handler(url, target_coll):
 
 
 if __name__ == "__main__":
-    get_filter_parts()
+    get_filter_parts_details()
