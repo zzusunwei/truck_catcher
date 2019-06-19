@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 catcher_db = client['truck_catcher_db']
 id_collect = catcher_db['id_collect']
+error_collection = catcher_db['error_collection']
 
 
 def get_html(url):
@@ -32,3 +33,11 @@ def get_next_id(collect_name):
         return ret.get("sequence_value", "default")
     id_collect.insert_one(({'_id': collect_name, 'sequence_value': 0}))
     return 0
+
+
+def except_handler(url, target_coll):
+    error_collection.insert_one({
+        "url": url,
+        "collection": target_coll,
+        "version": 0
+    })
