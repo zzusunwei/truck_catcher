@@ -22,6 +22,8 @@ def get_filter_detail(url):
         product["desc"] = desc
         detail_info = product_page.find(name="div",
                                         attrs={"class": "info-typedesc"})
+        if not detail_info:
+            continue
         lis = detail_info.find(name="div", attrs={
             "class": "basic-info"
         }).findAll("li")
