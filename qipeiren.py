@@ -6,6 +6,8 @@ truck_parts_qipeiren_db = client['truck_parts_qipeiren_db']
 
 product_coll = truck_parts_qipeiren_db["product_coll"]
 
+air_filter_coll = truck_parts_qipeiren_db["air_filter_coll"]
+
 
 def get_filter_detail(url):
     html = get_html(url)
@@ -46,9 +48,11 @@ def get_filter_detail(url):
                     continue
                 adp_prods.append(li.text.strip())
             product[adp_type] = adp_prods
-        product_coll.insert(product)
+        air_filter_coll.insert(product)
 
 
 if __name__ == "__main__":
     for i in range(1, 100):
-        get_filter_detail("http://www.qipeiren.com/c/101095P" + str(i) + "/")
+        # get_filter_detail("http://www.qipeiren.com/c/101095P" + str(i) + "/")
+        print(i)
+        get_filter_detail("http://www.qipeiren.com/c/101048P" + str(i) + "/")
