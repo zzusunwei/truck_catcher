@@ -127,9 +127,6 @@ def get_filter_parts_details(url, collection_name):
     return filter
 
 
-
-
-
 def error_handler():
     models = error_collection.find({"version": {
         "$lt": 2
