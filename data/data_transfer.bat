@@ -19,8 +19,8 @@ REM mongoexport -d truck_parts_qipeiren_db -c qipeiren_air_filter_coll -o qipeir
 
 
 
-REM mongoimport -d truck_parts_qipeiren_db -c qipeiren_product_coll qipeiren_product_coll.dat
-REM mongoimport -d truck_parts_qipeiren_db -c qipeiren_air_filter_coll qipeiren_air_filter_coll.dat
+mongoimport -d truck_parts_qipeiren_db -c qipeiren_product_coll qipeiren_product_coll.dat
+mongoimport -d truck_parts_qipeiren_db -c qipeiren_air_filter_coll qipeiren_air_filter_coll.dat
 
 REM mongoimport -d truck_parts_chinacvsp -c chinacvsp_filter_detail_model chinacvsp_filter_detail_model.dat
 REM mongoimport -d truck_parts_chinacvsp -c chinacvsp_filter_model chinacvsp_filter_model.dat

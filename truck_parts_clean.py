@@ -7,6 +7,7 @@ current_version = 1
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 truck_parts_cn357_db = client['truck_parts_cn357_db']
 truck_parts_che360_db = client['truck_parts_db']
+truck_parts_qipeiren_db = client['truck_parts_qipeiren_db']
 
 target_truck_parts_db = client['target_truck_parts_db']
 
@@ -24,6 +25,8 @@ cn357_truck_model_detail = truck_parts_cn357_db["cn357_truck_model_detail"]
 filter_model_detail = target_truck_parts_db["filter_model_detail"]
 engine_model_detail = target_truck_parts_db["engine_model_detail"]
 truck_model_detail = target_truck_parts_db["truck_model_detail"]
+
+qipeiren_product_coll = truck_parts_qipeiren_db['qipeiren_product_coll']
 
 
 def cn357_filter_clean():
@@ -225,9 +228,71 @@ def eurocvbay_parts_clean():
             # filter_model_detail.insert_one(filter)
 
 
+def qipeiren_product_coll_clean():
+    has_next = True
+    for i in range(0, 100000):
+        page_size = 10
+        coll = qipeiren_product_coll.find({}).sort(
+            '_id', pymongo.ASCENDING).skip(i * page_size).limit(page_size)
+        if not has_next:
+            return
+        has_next = False
+        for data in coll:
+            has_next = True
+            product = {}
+            product["id"] = data.get("_id", "")
+            product["id"] = data.get("适用范围", "")
+            product["id"] = data.get("用途", "")
+            product["id"] = data.get("产品认证", "")
+            product["id"] = data.get("排量", "")
+            product["id"] = data.get("外径", "")
+            product["id"] = data.get("型号", "")
+            product["id"] = data.get("适配车型", "")
+            product["id"] = data.get("容积", "")
+            product["id"] = data.get("类别", "")
+            product["id"] = data.get("品牌", "")
+            product["id"] = data.get("缸径", "")
+            product["id"] = data.get("缸数", "")
+            product["id"] = data.get("长度", "")
+            product["id"] = data.get("排放标准", "")
+            product["id"] = data.get("极数", "")
+            product["id"] = data.get("最大载荷", "")
+            product["id"] = data.get("内径", "")
+            product["id"] = data.get("发动机排量", "")
+            product["id"] = data.get("外观尺寸", "")
+            product["id"] = data.get("汽缸数", "")
+            product["id"] = data.get("适配机型", "")
+            product["id"] = data.get("材质", "")
+            product["id"] = data.get("轮距", "")
+            product["height"] = data.get("高度", "")
+            product["origin"] = data.get("产地", "")
+            product["pressure"] = data.get("压力", "")
+            product["color"] = data.get("颜色", "")
+            product["type"] = data.get("类型", "")
+            product["desc"] = data.get("desc", "")
+            product["engine_hp"] = data.get("发动机马力", "")
+
+
+def get_all_key():
+    has_next = True
+    keys = set()
+    for i in range(0, 100000):
+        page_size = 10
+        coll = qipeiren_product_coll.find({}).sort('_id', pymongo.ASCENDING).skip(
+            i * page_size).limit(page_size)
+        if not has_next:
+            return keys
+        has_next = False
+        for data in coll:
+            has_next = True
+            for key in data.keys():
+                keys.add(key)
+
+
 if __name__ == "__main__":
     # cn357_filter_clean()
     # cn357_truck_clean()
     # che360_truck_clean()
     # che360_engine_clean()
-    che360_filter_clean()
+    # che360_filter_clean()
+    print(get_all_key())
